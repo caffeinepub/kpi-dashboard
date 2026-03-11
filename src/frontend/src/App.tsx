@@ -55,7 +55,10 @@ const PRIORITY_KPI_PATTERNS = [
   "active users in bl txn",
   "bl txn",
   "notif dau",
-  "bl txn notif",
+  "and_notif_dau",
+  "and_notif_txns",
+  "ios_notif_dau",
+  "ios_notif_txn",
   "and notif dau",
   "and notif txns",
   "ios notif dau",
@@ -474,8 +477,8 @@ export default function App() {
       <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex gap-6">
           {/* Left Sidebar: KPI Selection */}
-          <aside className="w-52 shrink-0">
-            <div className="bg-card border border-border rounded-xl p-4 sticky top-20">
+          <aside className="w-52 shrink-0 sticky top-20 self-start h-[calc(100vh-5rem)]">
+            <div className="bg-card border border-border rounded-xl p-4 h-full flex flex-col overflow-hidden">
               <p className="text-xs font-display font-semibold text-foreground uppercase tracking-wider mb-1">
                 KPI Columns
               </p>
@@ -483,82 +486,84 @@ export default function App() {
                 {selectedKPIs.size} selected
               </p>
 
-              {/* Priority KPIs */}
-              {priorityKpiList.length > 0 && (
-                <>
-                  <p className="text-[10px] font-mono text-primary/60 uppercase tracking-widest mb-1.5">
-                    Priority
-                  </p>
-                  <div className="flex flex-col gap-1.5 mb-3">
-                    {priorityKpiList.map((kpi, idx) => {
-                      const checkboxId = `kpi-checkbox-${kpi.replace(/\s+/g, "-")}`;
-                      return (
-                        <label
-                          key={kpi}
-                          htmlFor={checkboxId}
-                          data-ocid={`filters.kpi.checkbox.${idx + 1}`}
-                          className={`flex items-center gap-2 px-2.5 py-2 rounded-md border cursor-pointer transition-all text-xs font-body select-none ${
-                            selectedKPIs.has(kpi)
-                              ? "border-primary/60 bg-primary/10 text-primary"
-                              : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
-                          }`}
-                        >
-                          <Checkbox
-                            id={checkboxId}
-                            checked={selectedKPIs.has(kpi)}
-                            onCheckedChange={() => toggleKPI(kpi)}
-                            className="h-3 w-3 shrink-0"
-                          />
-                          <span className="leading-tight break-words">
-                            {kpi}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-
-              {/* Other KPIs */}
-              {otherKpiList.length > 0 && (
-                <>
-                  {priorityKpiList.length > 0 && (
-                    <div className="border-t border-border/50 mb-3" />
-                  )}
-                  {priorityKpiList.length > 0 && (
-                    <p className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-1.5">
-                      Other
+              <div className="flex-1 overflow-y-auto min-h-0">
+                {/* Priority KPIs */}
+                {priorityKpiList.length > 0 && (
+                  <>
+                    <p className="text-[10px] font-mono text-primary/60 uppercase tracking-widest mb-1.5">
+                      Priority
                     </p>
-                  )}
-                  <div className="flex flex-col gap-1.5">
-                    {otherKpiList.map((kpi, idx) => {
-                      const checkboxId = `kpi-checkbox-${kpi.replace(/\s+/g, "-")}`;
-                      return (
-                        <label
-                          key={kpi}
-                          htmlFor={checkboxId}
-                          data-ocid={`filters.kpi.checkbox.${priorityKpiList.length + idx + 1}`}
-                          className={`flex items-center gap-2 px-2.5 py-2 rounded-md border cursor-pointer transition-all text-xs font-body select-none ${
-                            selectedKPIs.has(kpi)
-                              ? "border-primary/60 bg-primary/10 text-primary"
-                              : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
-                          }`}
-                        >
-                          <Checkbox
-                            id={checkboxId}
-                            checked={selectedKPIs.has(kpi)}
-                            onCheckedChange={() => toggleKPI(kpi)}
-                            className="h-3 w-3 shrink-0"
-                          />
-                          <span className="leading-tight break-words">
-                            {kpi}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+                    <div className="flex flex-col gap-1.5 mb-3">
+                      {priorityKpiList.map((kpi, idx) => {
+                        const checkboxId = `kpi-checkbox-${kpi.replace(/\s+/g, "-")}`;
+                        return (
+                          <label
+                            key={kpi}
+                            htmlFor={checkboxId}
+                            data-ocid={`filters.kpi.checkbox.${idx + 1}`}
+                            className={`flex items-center gap-2 px-2.5 py-2 rounded-md border cursor-pointer transition-all text-xs font-body select-none ${
+                              selectedKPIs.has(kpi)
+                                ? "border-primary/60 bg-primary/10 text-primary"
+                                : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
+                            }`}
+                          >
+                            <Checkbox
+                              id={checkboxId}
+                              checked={selectedKPIs.has(kpi)}
+                              onCheckedChange={() => toggleKPI(kpi)}
+                              className="h-3 w-3 shrink-0"
+                            />
+                            <span className="leading-tight break-words">
+                              {kpi}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+
+                {/* Other KPIs */}
+                {otherKpiList.length > 0 && (
+                  <>
+                    {priorityKpiList.length > 0 && (
+                      <div className="border-t border-border/50 mb-3" />
+                    )}
+                    {priorityKpiList.length > 0 && (
+                      <p className="text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest mb-1.5">
+                        Other
+                      </p>
+                    )}
+                    <div className="flex flex-col gap-1.5">
+                      {otherKpiList.map((kpi, idx) => {
+                        const checkboxId = `kpi-checkbox-${kpi.replace(/\s+/g, "-")}`;
+                        return (
+                          <label
+                            key={kpi}
+                            htmlFor={checkboxId}
+                            data-ocid={`filters.kpi.checkbox.${priorityKpiList.length + idx + 1}`}
+                            className={`flex items-center gap-2 px-2.5 py-2 rounded-md border cursor-pointer transition-all text-xs font-body select-none ${
+                              selectedKPIs.has(kpi)
+                                ? "border-primary/60 bg-primary/10 text-primary"
+                                : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
+                            }`}
+                          >
+                            <Checkbox
+                              id={checkboxId}
+                              checked={selectedKPIs.has(kpi)}
+                              onCheckedChange={() => toggleKPI(kpi)}
+                              className="h-3 w-3 shrink-0"
+                            />
+                            <span className="leading-tight break-words">
+                              {kpi}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </aside>
 
